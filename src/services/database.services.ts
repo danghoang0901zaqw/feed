@@ -25,7 +25,6 @@ class DatabaseService {
     } catch (error) {
       console.log(error)
     } finally {
-      await this.client.close()
     }
   }
   get users(): Collection<User> {
