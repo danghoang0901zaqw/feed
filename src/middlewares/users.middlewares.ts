@@ -5,6 +5,36 @@ import { ErrorWithStatus } from '~/models/Error'
 import usersServices from '~/services/users.services'
 import { validate } from '~/utils/validate'
 
+export const signInValidator = validate(
+  checkSchema({
+    email: {
+      notEmpty: {
+        errorMessage: USER_MESSAGES.EMAIL_IS_REQUIRED
+      },
+      trim: true,
+      isEmail: {
+        errorMessage: USER_MESSAGES.EMAIL_IS_INVALID
+      }
+    },
+    password: {
+      trim: true,
+      notEmpty: {
+        errorMessage: USER_MESSAGES.PASSWORD_IS_REQUIRED
+      },
+      isLength: { options: { min: 8, max: 50 }, errorMessage: USER_MESSAGES.PASSWORD_LENGTH },
+      isStrongPassword: {
+        options: {
+          minLength: 8,
+          minNumbers: 1,
+          minLowercase: 1,
+          minUppercase: 1
+        },
+        errorMessage: USER_MESSAGES.PASSWORD_IS_STRONG
+      }
+    }
+  })
+)
+
 export const signUpValidator = validate(
   checkSchema({
     name: {
@@ -29,7 +59,7 @@ export const signUpValidator = validate(
       custom: {
         options: async (value, { req }) => {
           const isExist = await usersServices.checkEmailExists(value)
-          if (isExist) {
+          if (!!isExist) {
             throw new ErrorWithStatus(USER_MESSAGES.EMAIL_ALREADY_EXISTS, HTTP_STATUS.UNPROCESSABLE_ENTITY)
           }
           return true
