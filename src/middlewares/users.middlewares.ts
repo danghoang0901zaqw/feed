@@ -1,8 +1,11 @@
 import { checkSchema } from 'express-validator'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USER_MESSAGES } from '~/constants/message'
+import AppError from '~/controllers/error.controler'
 import { ErrorWithStatus } from '~/models/Error'
+import databaseServices from '~/services/database.services'
 import usersServices from '~/services/users.services'
+import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validate'
 
 export const signInValidator = validate(
@@ -119,4 +122,48 @@ export const signUpValidator = validate(
       }
     }
   })
+)
+
+export const signOutValidator = validate(
+  checkSchema(
+    {
+      authorization: {
+        custom: {
+          options: (value, { req }) => {
+            const accessToken = value.slice('Bearer '.length)
+            if (!accessToken) {
+              throw new AppError(USER_MESSAGES.UN_AUTHORIZATION, HTTP_STATUS.UNAUTHORIZED)
+            }
+            const decode = verifyToken(accessToken)
+            req.decode = decode
+            return true
+          }
+        }
+      }
+    },
+    ['headers']
+  )
+)
+
+export const refreshTokenValidator = validate(
+  checkSchema(
+    {
+      refresh_token: {
+        custom: {
+          options: async (value, { req }) => {
+            const decode = verifyToken(value)
+            const isExistRefreshToken = await databaseServices.refreshTokens.findOne({
+              token: value
+            })
+            if (!isExistRefreshToken) {
+              throw new AppError(USER_MESSAGES.UN_AUTHORIZATION, HTTP_STATUS.UNAUTHORIZED)
+            }
+            req.decode = decode
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
 )

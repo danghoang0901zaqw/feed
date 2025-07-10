@@ -9,7 +9,7 @@ class UserControllers {
   async signIn(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body
     const result = await usersServices.signIn(email, password)
-    res.status(HTTP_STATUS.OK).json({
+    return res.status(HTTP_STATUS.OK).json({
       message: USER_MESSAGES.LOGIN_SUCCESS,
       data: result
     })
@@ -22,9 +22,15 @@ class UserControllers {
       date_of_birth,
       name
     })
-    res.status(HTTP_STATUS.CREATED).json({
+    return res.status(HTTP_STATUS.CREATED).json({
       message: USER_MESSAGES.REGISTER_SUCCESS,
       data: result
+    })
+  }
+  async signOut(req: Request, res: Response, next: NextFunction) {
+    const result = await usersServices.signOut(req.body.refresh_token)
+    return res.status(HTTP_STATUS.OK).json({
+      ...result
     })
   }
 }

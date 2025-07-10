@@ -16,7 +16,7 @@ export const generateToken = (payload: JwtPayload, expiresIn: string): Promise<s
       { expiresIn, algorithm: 'HS256' } as SignOptions,
       (err, token) => {
         if (err) {
-          throw reject(err) 
+          throw reject(err)
         } else {
           resolve(token as string)
         }
@@ -26,10 +26,6 @@ export const generateToken = (payload: JwtPayload, expiresIn: string): Promise<s
 }
 
 export const verifyToken = (token: string) => {
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string)
-    return decoded
-  } catch (err) {
-    console.log(err)
-  }
+  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string)
+  return decoded
 }
