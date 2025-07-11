@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import { TokenType } from '~/constants/enum'
 dotenv.config()
 
-interface JwtPayload {
+export interface JwtPayload {
   userId: string
   tokenType: TokenType
 }

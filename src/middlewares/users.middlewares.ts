@@ -124,7 +124,7 @@ export const signUpValidator = validate(
   })
 )
 
-export const signOutValidator = validate(
+export const accessTokenValidator = validate(
   checkSchema(
     {
       authorization: {
@@ -135,7 +135,7 @@ export const signOutValidator = validate(
               throw new AppError(USER_MESSAGES.UN_AUTHORIZATION, HTTP_STATUS.UNAUTHORIZED)
             }
             const decode = verifyToken(accessToken)
-            req.decode = decode
+            req.decodeAccessToken = decode
             return true
           }
         }
@@ -158,7 +158,7 @@ export const refreshTokenValidator = validate(
             if (!isExistRefreshToken) {
               throw new AppError(USER_MESSAGES.UN_AUTHORIZATION, HTTP_STATUS.UNAUTHORIZED)
             }
-            req.decode = decode
+            req.decodeRefreshToken = decode
             return true
           }
         }
@@ -166,4 +166,21 @@ export const refreshTokenValidator = validate(
     },
     ['body']
   )
+)
+
+export const emailVerifyTokenValidator = validate(
+  checkSchema({
+    email_verify_token: {
+      custom: {
+        options: async (value, { req }) => {
+          if (!value) {
+            throw new AppError(USER_MESSAGES.EMAIL_VERIFY_TOKEN_IS_REQUIRED, HTTP_STATUS.BAD_REQUEST)
+          }
+          const decode = verifyToken(value)
+          req.decodeEmailVerifyToken = decode
+          return true
+        }
+      }
+    }
+  })
 )

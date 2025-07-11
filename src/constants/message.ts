@@ -19,4 +19,11 @@ export const USER_MESSAGES = {
   UN_AUTHORIZATION:'Unauthorized',
   REFRESH_TOKEN_IS_REQUIRED: 'Refresh token is required',
   LOGOUT_SUCCESS: 'Logout successfully',
+  EMAIL_VERIFY_TOKEN_IS_REQUIRED: 'Email verify token is required',
+  EMAIL_VERIFY_TOKEN_IS_INVALID: 'Email verify token is invalid',
+  EMAIL_VERIFY_SUCCESS: 'Email verify successfully',
+  EMAIL_VERIFY_FAILED: 'Email verify failed',
+  EMAIL_WAS_VERIFIED: 'Email was verified',
+  USER_NOT_FOUND: 'User not found',
+  RESEND_VERIFY_EMAIL_SUCCESS: 'Resend verify email successfully',
 } as const
