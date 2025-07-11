@@ -39,6 +39,15 @@ class UsersService {
       process.env.JWT_EMAIL_VERIFY_TOKEN_EXPIRES_IN || '5m'
     )
   }
+  private signForgotPasswordToken(userId: string): Promise<string> {
+    return generateToken(
+      {
+        userId,
+        tokenType: TokenType.RefreshToken
+      },
+      process.env.JWT_EMAIL_VERIFY_TOKEN_EXPIRES_IN || '5m'
+    )
+  }
   async signUp(payload: SignUpRequest) {
     const user_id = new ObjectId()
     const emailVerifyToken = await this.signEmailVerifyToken(user_id.toString())
@@ -128,6 +137,28 @@ class UsersService {
       }
     )
     return true
+  }
+
+  async forgotPassword(user_id: string) {
+    await databaseServices.users.updateOne(
+      { _id: new ObjectId(user_id) },
+      {
+        $set: { forgot_password_token: await this.signForgotPasswordToken(user_id) },
+        $currentDate: { updated_at: true }
+      }
+    )
+    return true
+  }
+  async resetPassword(user_id: string, plainTextPassword: string) {
+    await databaseServices.users.updateOne(
+      {
+        _id: new ObjectId(user_id)
+      },
+      {
+        $set: { forgot_password_token: null, password: hashPassword(plainTextPassword) },
+        $currentDate: { updated_at: true }
+      }
+    )
   }
 }
 export default new UsersService()
