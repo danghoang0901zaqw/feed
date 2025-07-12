@@ -131,6 +131,9 @@ export const accessTokenValidator = validate(
       authorization: {
         custom: {
           options: (value, { req }) => {
+            if (!value) {
+              throw new AppError(USER_MESSAGES.UN_AUTHORIZATION, HTTP_STATUS.UNAUTHORIZED)
+            }
             const accessToken = value.slice('Bearer '.length)
             if (!accessToken) {
               throw new AppError(USER_MESSAGES.UN_AUTHORIZATION, HTTP_STATUS.UNAUTHORIZED)
@@ -177,7 +180,7 @@ export const emailVerifyTokenValidator = validate(
           if (!value) {
             throw new AppError(USER_MESSAGES.EMAIL_VERIFY_TOKEN_IS_REQUIRED, HTTP_STATUS.BAD_REQUEST)
           }
-          const decode = verifyToken(value)
+          const decode =await verifyToken(value)
           req.decodeEmailVerifyToken = decode
           return true
         }
@@ -222,7 +225,7 @@ export const verifyForgotPasswordTokenValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
-            const decode = verifyToken(value) as JwtPayload
+            const decode =await verifyToken(value)
             const user = await databaseServices.users.findOne({
               _id: new ObjectId(decode.userId)
             })
@@ -287,7 +290,7 @@ export const verifyResetPasswordValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
-            const decode = verifyToken(value) as JwtPayload
+            const decode =await verifyToken(value)
             const user = await databaseServices.users.findOne({
               _id: new ObjectId(decode.userId)
             })

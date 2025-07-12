@@ -28,13 +28,14 @@ export const generateToken = (payload: JwtPayload, expiresIn: string): Promise<s
   })
 }
 
-export const verifyToken = (token: string) => {
+export const verifyToken = async (token: string): Promise<JwtPayload> => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string)
-    return decoded
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY as string)
+    return decoded as JwtPayload
   } catch (error) {
     if (error instanceof JsonWebTokenError) {
       throw new AppError(USER_MESSAGES.UN_AUTHORIZATION, HTTP_STATUS.UNAUTHORIZED)
     }
+    throw error
   }
 }
