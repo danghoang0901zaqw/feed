@@ -75,5 +75,15 @@ class UserControllers {
       data: true
     })
   }
+
+  async myProfile(req: Request, res: Response, next: NextFunction) {
+    const { _id } = req.user as UserI
+    const result = await usersServices.myProfile(_id!.toString())
+    return res.status(HTTP_STATUS.OK).json({
+      data: {
+        ...result
+      }
+    })
+  }
 }
 export default new UserControllers()

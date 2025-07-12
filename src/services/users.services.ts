@@ -160,5 +160,19 @@ class UsersService {
       }
     )
   }
+
+  async myProfile(userId: string) {
+    const user = await databaseServices.users.findOne(
+      { _id: new ObjectId(userId) },
+      {
+        projection: {
+          password: 0,
+          forgot_password_token: 0,
+          email_verify_token: 0
+        }
+      }
+    )
+    return user
+  }
 }
 export default new UsersService()

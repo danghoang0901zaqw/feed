@@ -1,5 +1,6 @@
 import express from 'express'
 import UsersControllers from '~/controllers/users.controllers'
+import { isAuthorized } from '~/middlewares/auth.middlewares'
 import catchAsync from '~/middlewares/catchAsync.middlewares'
 import {
   emailVerifyTokenValidator,
@@ -22,8 +23,7 @@ router.route('/forgot-password').post(forgotPasswordValidator, catchAsync(UsersC
 router
   .route('/verify-forgot-password')
   .post(verifyForgotPasswordTokenValidator, catchAsync(UsersControllers.verifyForgotPasswordToken))
-  router
-  .route('/reset-password')
-  .post(verifyResetPasswordValidator, catchAsync(UsersControllers.resetPassword))
+router.route('/reset-password').post(verifyResetPasswordValidator, catchAsync(UsersControllers.resetPassword))
+router.route('/my-profile').get(isAuthorized, catchAsync(UsersControllers.myProfile))
 
 export default router
