@@ -17,7 +17,6 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
     const decodedToken =await verifyToken(accessToken)
     if (decodedToken) {
       const freshUser = await databaseServices.users.findOne({ _id: new ObjectId(decodedToken.userId) })
-      console.log(freshUser)
       if (!freshUser) {
         next(new AppError(USER_MESSAGES.USER_NOT_FOUND, HTTP_STATUS.UNAUTHORIZED))
         return
