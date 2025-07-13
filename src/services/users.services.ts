@@ -10,6 +10,7 @@ import { USER_MESSAGES } from '~/constants/message'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ObjectId } from 'mongodb'
 import { SignUpRequest, UpdateProfileBody } from '~/models/requests/User.requests'
+import Follower from '~/models/database/Follower.schema'
 
 class UsersService {
   private signAccessToken(userId: string): Promise<string> {
@@ -121,7 +122,6 @@ class UsersService {
   }
   async resendVerifyEmail(user_id: string) {
     const user = await databaseServices.users.findOne({ _id: new ObjectId(user_id) })
-    console.log(user)
     if (!user) {
       throw new AppError(USER_MESSAGES.USER_NOT_FOUND, HTTP_STATUS.NOT_FOUND)
     }
@@ -208,6 +208,16 @@ class UsersService {
       }
     )
     return updateUser
+  }
+
+  async follow(user_id: string, follower_user_id: string) {
+    await databaseServices.followers.insertOne(
+      new Follower({
+        user_id: new ObjectId(user_id),
+        follower_user_id: new ObjectId(follower_user_id)
+      })
+    )
+    return true
   }
 }
 export default new UsersService()

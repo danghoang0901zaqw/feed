@@ -1,7 +1,13 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
 import usersServices from '~/services/users.services'
-import { EmailVerifyBody, SignInRequest, SignUpRequest, SingOutRequest, UpdateProfileBody } from '~/models/requests/User.requests'
+import {
+  EmailVerifyBody,
+  SignInRequest,
+  SignUpRequest,
+  SingOutRequest,
+  UpdateProfileBody
+} from '~/models/requests/User.requests'
 import { USER_MESSAGES } from '~/constants/message'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { UserI } from '~/models/database/User.schema'
@@ -95,6 +101,15 @@ class UserControllers {
       data: {
         ...result
       }
+    })
+  }
+  async follow(req: Request, res: Response, next: NextFunction) {
+    const { follower_user_id } = req.body
+    const { _id } = req.user as UserI
+    const result = await usersServices.follow(_id!.toString(), follower_user_id)
+    return res.status(HTTP_STATUS.CREATED).json({
+      message: USER_MESSAGES.FOLLOW_SUCCESS,
+      data: result
     })
   }
 }

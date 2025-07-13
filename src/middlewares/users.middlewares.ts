@@ -376,3 +376,32 @@ export const updateProfileValidator = validate(
     ['body']
   )
 )
+
+export const followerValidator = validate(
+  checkSchema({
+    follower_user_id: {
+      notEmpty: {
+        errorMessage: USER_MESSAGES.FOLLOWER_USER_ID_IS_NOT_EMPTY
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const { _id } = req.user
+          if (_id.toString() === value) {
+            throw new AppError(USER_MESSAGES.CANNOT_FOLLOW_YOURSELF, HTTP_STATUS.BAD_REQUEST)
+          }
+          const isExistUser = await databaseServices.users.findOne({ _id: new ObjectId(value) })
+          if (!isExistUser) {
+            throw new AppError(USER_MESSAGES.USER_NOT_FOUND, HTTP_STATUS.NOT_FOUND)
+          }
+          const isFollowing = await databaseServices.followers.findOne({
+            user_id: new ObjectId(_id),
+            follower_user_id: new ObjectId(value)
+          })
+          if (isFollowing) {
+            throw new AppError(USER_MESSAGES.ALREADY_FOLLOWING, HTTP_STATUS.BAD_REQUEST)
+          }
+        }
+      }
+    }
+  })
+)

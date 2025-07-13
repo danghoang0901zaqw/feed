@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 import { Collection, Db, MongoClient, ServerApiVersion } from 'mongodb'
+import Follower from '~/models/database/Follower.schema'
 import RefreshToken from '~/models/database/RefreshToken.schema'
 import User from '~/models/database/User.schema'
 dotenv.config()
@@ -33,6 +34,9 @@ class DatabaseService {
   }
   get refreshTokens(): Collection<RefreshToken> {
     return this.db.collection('refresh_tokens')
+  }
+  get followers(): Collection<Follower> {
+    return this.db.collection('followers')
   }
 }
 export default new DatabaseService()

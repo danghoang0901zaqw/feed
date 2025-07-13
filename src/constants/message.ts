@@ -43,4 +43,8 @@ export const USER_MESSAGES = {
   IMAGE_URL_IS_STRING: 'Image URL must be a string',
   IMAGE_URL_LENGTH: 'Image URL must be between 1 and 400 characters',
   UPDATE_PROFILE_SUCCESS: 'Update profile successfully',
+  FOLLOWER_USER_ID_IS_NOT_EMPTY: 'Follower user ID is not empty',
+  FOLLOW_SUCCESS: 'Follow successfully',
+  CANNOT_FOLLOW_YOURSELF: 'Cannot follow yourself',
+  ALREADY_FOLLOWING: 'Already following',
 } as const
