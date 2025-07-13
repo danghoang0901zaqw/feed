@@ -9,7 +9,7 @@ import AppError from '~/controllers/error.controler'
 import { USER_MESSAGES } from '~/constants/message'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ObjectId } from 'mongodb'
-import { SignUpRequest } from '~/models/requests/User.requests'
+import { SignUpRequest, UpdateProfileBody } from '~/models/requests/User.requests'
 
 class UsersService {
   private signAccessToken(userId: string): Promise<string> {
@@ -173,6 +173,41 @@ class UsersService {
       }
     )
     return user
+  }
+
+  async updateMyProfile(user_id: string, payload: UpdateProfileBody) {
+    const allowedFields: (keyof UpdateProfileBody)[] = [
+      'name',
+      'date_of_birth',
+      'bio',
+      'location',
+      'website',
+      'username',
+      'avatar',
+      'cover'
+    ]
+    const filteredPayload = Object.fromEntries(
+      Object.entries(payload).filter(([key]) => allowedFields.includes(key as keyof UpdateProfileBody))
+    ) as UpdateProfileBody
+    const updateUser = await databaseServices.users.findOneAndUpdate(
+      { _id: new ObjectId(user_id) },
+      {
+        $set: {
+          ...filteredPayload,
+          ...(filteredPayload.date_of_birth && { date_of_birth: new Date(filteredPayload.date_of_birth) })
+        },
+        $currentDate: { updated_at: true }
+      },
+      {
+        returnDocument: 'after',
+        projection: {
+          password: 0,
+          forgot_password_token: 0,
+          email_verify_token: 0
+        }
+      }
+    )
+    return updateUser
   }
 }
 export default new UsersService()

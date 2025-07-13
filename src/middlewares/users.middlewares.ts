@@ -180,7 +180,7 @@ export const emailVerifyTokenValidator = validate(
           if (!value) {
             throw new AppError(USER_MESSAGES.EMAIL_VERIFY_TOKEN_IS_REQUIRED, HTTP_STATUS.BAD_REQUEST)
           }
-          const decode =await verifyToken(value)
+          const decode = await verifyToken(value)
           req.decodeEmailVerifyToken = decode
           return true
         }
@@ -225,7 +225,7 @@ export const verifyForgotPasswordTokenValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
-            const decode =await verifyToken(value)
+            const decode = await verifyToken(value)
             const user = await databaseServices.users.findOne({
               _id: new ObjectId(decode.userId)
             })
@@ -290,7 +290,7 @@ export const verifyResetPasswordValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
-            const decode =await verifyToken(value)
+            const decode = await verifyToken(value)
             const user = await databaseServices.users.findOne({
               _id: new ObjectId(decode.userId)
             })
@@ -301,6 +301,76 @@ export const verifyResetPasswordValidator = validate(
             return true
           }
         }
+      }
+    },
+    ['body']
+  )
+)
+
+export const updateProfileValidator = validate(
+  checkSchema(
+    {
+      name: {
+        optional: true,
+        isLength: {
+          options: { min: 1, max: 100 },
+          errorMessage: USER_MESSAGES.NAME_LENGTH
+        },
+        isString: true,
+        trim: true
+      },
+      date_of_birth: {
+        optional: true,
+        isISO8601: {
+          options: {
+            strictSeparator: true,
+            strict: true
+          },
+          errorMessage: USER_MESSAGES.DATE_OF_BIRTH_IS8601_INVALID
+        }
+      },
+      bio: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGES.BIO_IS_STRING
+        },
+        isLength: { options: { min: 1, max: 200 }, errorMessage: USER_MESSAGES.BIO_LENGTH }
+      },
+      location: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGES.LOCATION_IS_STRING
+        },
+        isLength: { options: { min: 1, max: 200 }, errorMessage: USER_MESSAGES.LOCATION_LENGTH }
+      },
+      website: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGES.WEBSITE_IS_STRING
+        },
+        isLength: { options: { min: 1, max: 200 }, errorMessage: USER_MESSAGES.WEBSITE_LENGTH }
+      },
+      username: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGES.USERNAME_IS_STRING
+        },
+        isLength: { options: { min: 1, max: 50 }, errorMessage: USER_MESSAGES.USERNAME_LENGTH }
+      },
+
+      avatar: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGES.IMAGE_URL_IS_STRING
+        },
+        isLength: { options: { min: 1, max: 400 }, errorMessage: USER_MESSAGES.IMAGE_URL_LENGTH }
+      },
+      cover: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGES.IMAGE_URL_IS_STRING
+        },
+        isLength: { options: { min: 1, max: 400 }, errorMessage: USER_MESSAGES.IMAGE_URL_LENGTH }
       }
     },
     ['body']

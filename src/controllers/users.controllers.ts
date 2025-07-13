@@ -1,7 +1,7 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
 import usersServices from '~/services/users.services'
-import { EmailVerifyBody, SignInRequest, SignUpRequest, SingOutRequest } from '~/models/requests/User.requests'
+import { EmailVerifyBody, SignInRequest, SignUpRequest, SingOutRequest, UpdateProfileBody } from '~/models/requests/User.requests'
 import { USER_MESSAGES } from '~/constants/message'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { UserI } from '~/models/database/User.schema'
@@ -31,7 +31,8 @@ class UserControllers {
   async signOut(req: Request<ParamsDictionary, any, SingOutRequest>, res: Response, next: NextFunction) {
     const result = await usersServices.signOut(req.body.refresh_token)
     return res.status(HTTP_STATUS.OK).json({
-      ...result
+      message: USER_MESSAGES.LOGOUT_SUCCESS,
+      data: result
     })
   }
   async verifyEmail(req: Request<ParamsDictionary, any, EmailVerifyBody>, res: Response, next: NextFunction) {
@@ -80,6 +81,17 @@ class UserControllers {
     const { _id } = req.user as UserI
     const result = await usersServices.myProfile(_id!.toString())
     return res.status(HTTP_STATUS.OK).json({
+      data: {
+        ...result
+      }
+    })
+  }
+
+  async updateMyProfile(req: Request<ParamsDictionary, any, UpdateProfileBody>, res: Response, next: NextFunction) {
+    const { _id } = req.user as UserI
+    const result = await usersServices.updateMyProfile(_id!.toString(), req.body)
+    return res.status(HTTP_STATUS.OK).json({
+      message: USER_MESSAGES.UPDATE_PROFILE_SUCCESS,
       data: {
         ...result
       }

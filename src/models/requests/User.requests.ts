@@ -11,9 +11,20 @@ export interface SignUpRequest {
 }
 
 export interface SingOutRequest {
-  refresh_token:string
+  refresh_token: string
 }
 
 export interface EmailVerifyBody {
-  email_verify_token:string
+  email_verify_token: string
+}
+
+export interface UpdateProfileBody {
+  name?: string
+  date_of_birth?: Date
+  bio?: string
+  location?: string
+  website?: string
+  username: string
+  avatar?: string
+  cover?: string
 }
