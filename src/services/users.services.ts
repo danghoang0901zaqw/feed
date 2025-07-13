@@ -210,13 +210,20 @@ class UsersService {
     return updateUser
   }
 
-  async follow(user_id: string, follower_user_id: string) {
+  async following(user_id: string, follower_user_id: string) {
     await databaseServices.followers.insertOne(
       new Follower({
         user_id: new ObjectId(user_id),
         follower_user_id: new ObjectId(follower_user_id)
       })
     )
+    return true
+  }
+  async unFollowing(user_id: string, follower_user_id: string) {
+    await databaseServices.followers.deleteOne({
+      user_id: new ObjectId(user_id),
+      follower_user_id: new ObjectId(follower_user_id)
+    })
     return true
   }
 }

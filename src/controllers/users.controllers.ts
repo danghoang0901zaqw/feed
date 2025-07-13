@@ -103,14 +103,24 @@ class UserControllers {
       }
     })
   }
-  async follow(req: Request, res: Response, next: NextFunction) {
+  async following(req: Request, res: Response, next: NextFunction) {
     const { follower_user_id } = req.body
     const { _id } = req.user as UserI
-    const result = await usersServices.follow(_id!.toString(), follower_user_id)
+    const result = await usersServices.following(_id!.toString(), follower_user_id)
     return res.status(HTTP_STATUS.CREATED).json({
       message: USER_MESSAGES.FOLLOW_SUCCESS,
       data: result
     })
   }
+
+  async unFollowing(req: Request, res: Response, next: NextFunction) {
+    const { follower_user_id } = req.body
+    const { _id } = req.user as UserI
+    const result = await usersServices.unFollowing(_id!.toString(), follower_user_id)
+    return res.status(HTTP_STATUS.OK).json({
+      message: USER_MESSAGES.UN_FOLLOW_SUCCESS,
+      data: result })
+  }
+  
 }
 export default new UserControllers()

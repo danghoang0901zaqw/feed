@@ -47,4 +47,6 @@ export const USER_MESSAGES = {
   FOLLOW_SUCCESS: 'Follow successfully',
   CANNOT_FOLLOW_YOURSELF: 'Cannot follow yourself',
   ALREADY_FOLLOWING: 'Already following',
+  UN_FOLLOW_SUCCESS: 'Unfollow successfully',
+  HAVE_NOT_FOLLOWING: 'have not following user',
 } as const

@@ -16,7 +16,7 @@ class Follower {
     this._id = _id
     this.user_id = user_id
     this.follower_user_id = follower_user_id
-    this.created_at = created_at
+    this.created_at = created_at || new Date()
   }
 }
 export default Follower
