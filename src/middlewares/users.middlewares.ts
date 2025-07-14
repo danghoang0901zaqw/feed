@@ -2,11 +2,13 @@ import { checkSchema } from 'express-validator'
 import { ObjectId } from 'mongodb'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USER_MESSAGES } from '~/constants/message'
+import { REGEX_USERNAME } from '~/constants/regex'
 import AppError from '~/controllers/error.controler'
 import { ErrorWithStatus } from '~/models/Error'
 import databaseServices from '~/services/database.services'
 import usersServices from '~/services/users.services'
-import { JwtPayload, verifyToken } from '~/utils/jwt'
+import { comparePassword } from '~/utils/bcrypt'
+import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validate'
 
 export const signInValidator = validate(
@@ -355,7 +357,19 @@ export const updateProfileValidator = validate(
         isString: {
           errorMessage: USER_MESSAGES.USERNAME_IS_STRING
         },
-        isLength: { options: { min: 1, max: 50 }, errorMessage: USER_MESSAGES.USERNAME_LENGTH }
+        custom: {
+          options: async (val) => {
+            if (!REGEX_USERNAME.test(val)) {
+              throw new AppError(USER_MESSAGES.USERNAME_INVALID, HTTP_STATUS.BAD_REQUEST)
+            }
+            const user = await databaseServices.users.findOne({ username: val })
+            if (user) {
+              throw new AppError(USER_MESSAGES.USERNAME_EXISTS, HTTP_STATUS.BAD_REQUEST)
+            }
+            return true
+          }
+        },
+        trim: true
       },
 
       avatar: {
@@ -430,4 +444,91 @@ export const unFollowerValidator = validate(
       }
     }
   })
+)
+
+export const changePasswordValidator = validate(
+  checkSchema(
+    {
+      old_password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGES.OLD_PASSWORD_IS_REQUIRED
+        },
+        isLength: { options: { min: 8, max: 50 }, errorMessage: USER_MESSAGES.PASSWORD_LENGTH },
+        isStrongPassword: {
+          options: {
+            minLength: 8,
+            minNumbers: 1,
+            minLowercase: 1,
+            minUppercase: 1
+          },
+          errorMessage: USER_MESSAGES.PASSWORD_IS_STRONG
+        },
+        custom: {
+          options: async (val, { req }) => {
+            const { _id } = req.user
+            const user = await databaseServices.users.findOne({
+              _id: new ObjectId(_id)
+            })
+            if (!user) {
+              throw new AppError(USER_MESSAGES.USER_NOT_FOUND, HTTP_STATUS.NOT_FOUND)
+            }
+            if (!comparePassword(val, user.password)) {
+              throw new AppError(USER_MESSAGES.OLD_PASSWORD_IS_WRONG, HTTP_STATUS.UNPROCESSABLE_ENTITY)
+            }
+            return true
+          }
+        },
+        trim: true
+      },
+      password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGES.PASSWORD_IS_REQUIRED
+        },
+        isLength: { options: { min: 8, max: 50 }, errorMessage: USER_MESSAGES.PASSWORD_LENGTH },
+        isStrongPassword: {
+          options: {
+            minLength: 8,
+            minNumbers: 1,
+            minLowercase: 1,
+            minUppercase: 1
+          },
+          errorMessage: USER_MESSAGES.PASSWORD_IS_STRONG
+        },
+        custom: {
+          options: (value, { req }) => {
+            if (value === req.body.old_password) {
+              throw new AppError(USER_MESSAGES.NEW_PASSWORD_IS_SAME_OLD_PASSWORD, HTTP_STATUS.UNPROCESSABLE_ENTITY)
+            }
+            return true
+          }
+        },
+        trim: true
+      },
+      confirm_password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGES.CONFIRM_PASSWORD_IS_REQUIRED
+        },
+        isLength: { options: { min: 8, max: 50 }, errorMessage: USER_MESSAGES.PASSWORD_LENGTH },
+        isStrongPassword: {
+          options: {
+            minLength: 8,
+            minNumbers: 1,
+            minLowercase: 1,
+            minUppercase: 1
+          },
+          errorMessage: USER_MESSAGES.PASSWORD_IS_STRONG
+        },
+        custom: {
+          options: (value, { req }) => {
+            if (value !== req.body.password) {
+              throw new AppError(USER_MESSAGES.CONFIRM_PASSWORD_MUST_MATCH, HTTP_STATUS.UNPROCESSABLE_ENTITY)
+            }
+            return true
+          }
+        },
+        trim: true
+      }
+    },
+    ['body']
+  )
 )

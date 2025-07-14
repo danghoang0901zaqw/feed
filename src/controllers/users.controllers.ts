@@ -119,8 +119,18 @@ class UserControllers {
     const result = await usersServices.unFollowing(_id!.toString(), follower_user_id)
     return res.status(HTTP_STATUS.OK).json({
       message: USER_MESSAGES.UN_FOLLOW_SUCCESS,
-      data: result })
+      data: result
+    })
   }
-  
+
+  async changePassword(req: Request, res: Response, next: NextFunction) {
+    const { password } = req.body
+    const { _id } = req.user as UserI
+    const result = await usersServices.changePassword(_id!.toString(), password)
+    return res.status(HTTP_STATUS.OK).json({
+      message: USER_MESSAGES.CHANGE_PASSWORD_SUCCESS,
+      data: result
+    })
+  }
 }
 export default new UserControllers()

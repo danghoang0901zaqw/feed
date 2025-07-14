@@ -38,7 +38,8 @@ export const USER_MESSAGES = {
   WEBSITE_IS_STRING: 'Website must be a string',
   WEBSITE_LENGTH: 'Website must be between 1 and 200 characters',
   USERNAME_IS_STRING: 'Username must be a string',
-  USERNAME_LENGTH: 'Username must be between 1 and 50 characters',
+  USERNAME_INVALID: 'Username must be 1 to 15 characters long and only contain letters, numbers, or underscores',
+  USERNAME_EXISTS: 'Username already exists',
   AVATAR_IS_STRING: 'Avatar must be a string',
   IMAGE_URL_IS_STRING: 'Image URL must be a string',
   IMAGE_URL_LENGTH: 'Image URL must be between 1 and 400 characters',
@@ -49,4 +50,8 @@ export const USER_MESSAGES = {
   ALREADY_FOLLOWING: 'Already following',
   UN_FOLLOW_SUCCESS: 'Unfollow successfully',
   HAVE_NOT_FOLLOWING: 'have not following user',
+  CHANGE_PASSWORD_SUCCESS: 'Change password successfully',
+  NEW_PASSWORD_IS_SAME_OLD_PASSWORD: 'New password must be different from the old password.',
+  OLD_PASSWORD_IS_REQUIRED: 'Old password is required',
+  OLD_PASSWORD_IS_WRONG: 'Old password is wrong'
 } as const

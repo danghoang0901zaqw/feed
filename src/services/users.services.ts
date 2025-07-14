@@ -226,5 +226,12 @@ class UsersService {
     })
     return true
   }
+  async changePassword(user_id: string, password: string) {
+    await databaseServices.users.updateOne(
+      { _id: new ObjectId(user_id) },
+      { $set: { password: hashPassword(password) }, $currentDate: { updated_at: true } }
+    )
+    return true
+  }
 }
 export default new UsersService()

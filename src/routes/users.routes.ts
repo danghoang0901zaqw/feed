@@ -13,7 +13,8 @@ import {
   verifyResetPasswordValidator,
   updateProfileValidator,
   followerValidator,
-  unFollowerValidator
+  unFollowerValidator,
+  changePasswordValidator
 } from '~/middlewares/users.middlewares'
 const router = express.Router()
 
@@ -31,6 +32,6 @@ router.route('/my-profile').get(isAuthorized, catchAsync(UsersControllers.myProf
 router.route('/my-profile').patch(isAuthorized, updateProfileValidator, catchAsync(UsersControllers.updateMyProfile))
 router.route('/following').post(isAuthorized, followerValidator, catchAsync(UsersControllers.following))
 router.route('/un-following').post(isAuthorized, unFollowerValidator, catchAsync(UsersControllers.unFollowing))
-
+router.route('/change-password').put(isAuthorized, changePasswordValidator, catchAsync(UsersControllers.changePassword))
 
 export default router
