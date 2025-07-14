@@ -49,6 +49,36 @@ class UsersService {
       process.env.JWT_EMAIL_VERIFY_TOKEN_EXPIRES_IN || '5m'
     )
   }
+
+  private async getOAuthGoogleToken(code: string) {
+    const body = new URLSearchParams({
+      code,
+      client_id: process.env.GOOGLE_CLIENT_ID ?? '',
+      client_secret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI ?? '',
+      grant_type: 'authorization_code'
+    })
+    const response = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: body.toString()
+    })
+    const data = await response.json()
+    return data
+  }
+  private async getUserInfoOAuth(access_token: string, id_token: string) {
+    const url = `https://openidconnect.googleapis.com/v1/userinfo?access_token=${access_token}&alt=json`
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${id_token}`
+      }
+    })
+    const data = await response.json()
+    return data
+  }
   async signUp(payload: SignUpRequest) {
     const user_id = new ObjectId()
     const emailVerifyToken = await this.signEmailVerifyToken(user_id.toString())
@@ -90,6 +120,38 @@ class UsersService {
       token: refreshToken
     })
     return { ...user, accessToken, refreshToken }
+  }
+
+  async oAuth(code: string) {
+    const { access_token, id_token } = await this.getOAuthGoogleToken(code)
+    const userInfo = await this.getUserInfoOAuth(access_token, id_token)
+    const user = await databaseServices.users.findOne({ email: userInfo.email })
+    if (!user) {
+      const data = await this.signUp({
+        email: userInfo.email,
+        password: Math.random().toString(36).substring(2, 7),
+        date_of_birth: new Date().toISOString(),
+        name: userInfo.name
+      })
+      return {
+        ...data,
+        newUser: true
+      }
+    } else {
+      const [accessToken, refreshToken] = await Promise.all([
+        this.signAccessToken(user._id.toString()),
+        this.signRefreshToken(user._id.toString())
+      ])
+      await databaseServices.refreshTokens.insertOne({
+        user_id: new ObjectId(user._id),
+        token: refreshToken
+      })
+      return {
+        accessToken,
+        refreshToken,
+        newUser: false
+      }
+    }
   }
   async signOut(refreshToken: string) {
     await databaseServices.refreshTokens.deleteOne({ token: refreshToken })

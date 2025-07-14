@@ -19,6 +19,7 @@ import {
 const router = express.Router()
 
 router.route('/sign-in').post(signInValidator, catchAsync(UsersControllers.signIn))
+router.route('/oauth/google').get(catchAsync(UsersControllers.signInOAuthGoogle))
 router.route('/sign-up').post(signUpValidator, catchAsync(UsersControllers.signUp))
 router.route('/sign-out').post(accessTokenValidator, refreshTokenValidator, catchAsync(UsersControllers.signOut))
 router.route('/verify-email').post(emailVerifyTokenValidator, catchAsync(UsersControllers.verifyEmail))

@@ -21,6 +21,13 @@ class UserControllers {
       data: result
     })
   }
+
+  async signInOAuthGoogle(req: Request, res: Response, next: NextFunction) {
+    const { code } = req.query
+    const { accessToken, refreshToken, newUser } = await usersServices.oAuth(code as string)
+    const url = `${process.env.DOMAIN_CLIENT}?access_token=${accessToken}&refresh_token=${refreshToken}&new_user=${newUser}`
+    return res.redirect(url)
+  }
   async signUp(req: Request<ParamsDictionary, any, SignUpRequest>, res: Response, next: NextFunction) {
     const { email, password, date_of_birth, name } = req.body
     const result = await usersServices.signUp({
