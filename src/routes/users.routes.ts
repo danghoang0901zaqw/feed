@@ -22,6 +22,7 @@ router.route('/sign-in').post(signInValidator, catchAsync(UsersControllers.signI
 router.route('/oauth/google').get(catchAsync(UsersControllers.signInOAuthGoogle))
 router.route('/sign-up').post(signUpValidator, catchAsync(UsersControllers.signUp))
 router.route('/sign-out').post(accessTokenValidator, refreshTokenValidator, catchAsync(UsersControllers.signOut))
+router.route('/refresh-token').post(refreshTokenValidator, catchAsync(UsersControllers.refreshToken))
 router.route('/verify-email').post(emailVerifyTokenValidator, catchAsync(UsersControllers.verifyEmail))
 router.route('/resend-verify-email').post(accessTokenValidator, catchAsync(UsersControllers.resendVerifyEmail))
 router.route('/forgot-password').post(forgotPasswordValidator, catchAsync(UsersControllers.forgotPassword))

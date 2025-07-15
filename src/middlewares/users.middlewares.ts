@@ -132,7 +132,7 @@ export const accessTokenValidator = validate(
     {
       authorization: {
         custom: {
-          options: (value, { req }) => {
+          options: async (value, { req }) => {
             if (!value) {
               throw new AppError(USER_MESSAGES.UN_AUTHORIZATION, HTTP_STATUS.UNAUTHORIZED)
             }
@@ -140,7 +140,7 @@ export const accessTokenValidator = validate(
             if (!accessToken) {
               throw new AppError(USER_MESSAGES.UN_AUTHORIZATION, HTTP_STATUS.UNAUTHORIZED)
             }
-            const decode = verifyToken(accessToken)
+            const decode = await verifyToken(accessToken)
             req.decodeAccessToken = decode
             return true
           }
@@ -155,9 +155,12 @@ export const refreshTokenValidator = validate(
   checkSchema(
     {
       refresh_token: {
+        notEmpty: {
+          errorMessage: USER_MESSAGES.REFRESH_TOKEN_IS_REQUIRED
+        },
         custom: {
           options: async (value, { req }) => {
-            const decode = verifyToken(value)
+            const decode = await verifyToken(value)
             const isExistRefreshToken = await databaseServices.refreshTokens.findOne({
               token: value
             })

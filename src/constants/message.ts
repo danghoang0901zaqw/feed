@@ -53,5 +53,6 @@ export const USER_MESSAGES = {
   CHANGE_PASSWORD_SUCCESS: 'Change password successfully',
   NEW_PASSWORD_IS_SAME_OLD_PASSWORD: 'New password must be different from the old password.',
   OLD_PASSWORD_IS_REQUIRED: 'Old password is required',
-  OLD_PASSWORD_IS_WRONG: 'Old password is wrong'
+  OLD_PASSWORD_IS_WRONG: 'Old password is wrong',
+  REFRESH_TOKEN_SUCCESS: 'Refresh token successfully',
 } as const

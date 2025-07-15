@@ -48,6 +48,15 @@ class UserControllers {
       data: result
     })
   }
+  async refreshToken(req: Request<ParamsDictionary, any, SingOutRequest>, res: Response, next: NextFunction) {
+    const { userId, exp } = req.decodeRefreshToken
+    const { refresh_token } = req.body
+    const result = await usersServices.refreshToken(userId, refresh_token, exp)
+    return res.status(HTTP_STATUS.OK).json({
+      message: USER_MESSAGES.REFRESH_TOKEN_SUCCESS,
+      data: { ...result }
+    })
+  }
   async verifyEmail(req: Request<ParamsDictionary, any, EmailVerifyBody>, res: Response, next: NextFunction) {
     const result = await usersServices.verifyEmail(req.decodeEmailVerifyToken.userId)
     return res.status(HTTP_STATUS.OK).json({
