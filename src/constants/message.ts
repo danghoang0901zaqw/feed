@@ -56,3 +56,18 @@ export const USER_MESSAGES = {
   OLD_PASSWORD_IS_WRONG: 'Old password is wrong',
   REFRESH_TOKEN_SUCCESS: 'Refresh token successfully',
 } as const
+
+export const TWEET_MESSAGES={
+  USER_ID_IS_REQUIRED: 'User ID is required',
+  TYPE_TWEET_IS_REQUIRED: 'Type tweet is required',
+  TYPE_TWEET_INVALID: 'Type tweet must be Tweet, Retweet Comment or Quote',
+  AUDIENCE_IS_REQUIRED: 'Audience is required',
+  AUDIENCE_INVALID: 'Audience must be Public, Private',
+  PARENT_ID_IS_REQUIRED: 'Parent ID is required',
+  CREATE_TWEET_SUCCESS: 'Create tweet successfully',
+  CONTENT_IS_REQUIRED: 'Content is required',
+  HASHTAGS_MUST_BE_STRING: 'Hashtags must be string',
+  MENTIONS_MUST_BE_STRING: 'Mentions must be string',
+  MEDIA_TYPE_INVALID: 'Media type must be image or video',
+  MEDIA_URL_MUST_BE_STRING: 'Media URL must be string',
+}

@@ -10,3 +10,19 @@ export enum TokenType {
   ResetPasswordToken,
   EmailVerifyToken
 }
+
+export enum TweetType {
+  Tweet,
+  Retweet,
+  Comment,
+  Quote
+}
+export enum TweetAudience {
+  Everyone,
+  TweeterCircle
+}
+
+export enum MediaType{
+  Image,
+  Video
+}
