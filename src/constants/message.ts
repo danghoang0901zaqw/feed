@@ -76,3 +76,9 @@ export const BOOKMARK_MESSAGES = {
   DELETE_SUCCESS: 'Delete bookmark successfully',
   FORBIDDEN: 'You do not have permission to delete this bookmark or it does not exist'
 }
+
+export const LIKE_MESSAGES = {
+  CREATE_SUCCESS: 'Like successfully',
+  DELETE_SUCCESS: 'Unlike successfully',
+  FORBIDDEN: 'You do not have permission to delete this unlike or it does not exist'
+}

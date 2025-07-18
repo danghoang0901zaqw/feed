@@ -3,6 +3,7 @@ import { Collection, Db, MongoClient, ServerApiVersion } from 'mongodb'
 import Bookmark from '~/models/database/Bookmark.schema'
 import Follower from '~/models/database/Follower.schema'
 import HashTag from '~/models/database/Hashtag.schema'
+import Like from '~/models/database/Like.schema'
 import RefreshToken from '~/models/database/RefreshToken.schema'
 import Tweet from '~/models/database/Tweet.schema'
 import User from '~/models/database/User.schema'
@@ -49,6 +50,9 @@ class DatabaseService {
   }
   get bookmarks():Collection<Bookmark>{
     return this.db.collection('bookmarks')
+  }
+   get likes():Collection<Like>{
+    return this.db.collection('likes')
   }
 }
 export default new DatabaseService()
