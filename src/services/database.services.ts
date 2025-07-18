@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 import { Collection, Db, MongoClient, ServerApiVersion } from 'mongodb'
+import Bookmark from '~/models/database/Bookmark.schema'
 import Follower from '~/models/database/Follower.schema'
 import HashTag from '~/models/database/Hashtag.schema'
 import RefreshToken from '~/models/database/RefreshToken.schema'
@@ -45,6 +46,9 @@ class DatabaseService {
   }
   get hashtags():Collection<HashTag>{
     return this.db.collection('hashtags')
+  }
+  get bookmarks():Collection<Bookmark>{
+    return this.db.collection('bookmarks')
   }
 }
 export default new DatabaseService()

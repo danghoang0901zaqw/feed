@@ -54,10 +54,10 @@ export const USER_MESSAGES = {
   NEW_PASSWORD_IS_SAME_OLD_PASSWORD: 'New password must be different from the old password.',
   OLD_PASSWORD_IS_REQUIRED: 'Old password is required',
   OLD_PASSWORD_IS_WRONG: 'Old password is wrong',
-  REFRESH_TOKEN_SUCCESS: 'Refresh token successfully',
+  REFRESH_TOKEN_SUCCESS: 'Refresh token successfully'
 } as const
 
-export const TWEET_MESSAGES={
+export const TWEET_MESSAGES = {
   USER_ID_IS_REQUIRED: 'User ID is required',
   TYPE_TWEET_IS_REQUIRED: 'Type tweet is required',
   TYPE_TWEET_INVALID: 'Type tweet must be Tweet, Retweet Comment or Quote',
@@ -69,5 +69,10 @@ export const TWEET_MESSAGES={
   HASHTAGS_MUST_BE_STRING: 'Hashtags must be string',
   MENTIONS_MUST_BE_STRING: 'Mentions must be string',
   MEDIA_TYPE_INVALID: 'Media type must be image or video',
-  MEDIA_URL_MUST_BE_STRING: 'Media URL must be string',
+  MEDIA_URL_MUST_BE_STRING: 'Media URL must be string'
+}
+export const BOOKMARK_MESSAGES = {
+  CREATE_SUCCESS: 'Create bookmark successfully',
+  DELETE_SUCCESS: 'Delete bookmark successfully',
+  FORBIDDEN: 'You do not have permission to delete this bookmark or it does not exist'
 }
